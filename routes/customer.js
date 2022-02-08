@@ -88,4 +88,81 @@ app.post("/", upload.single("image"), (req, res) => {
   }
 });
 
+//PUT CUSTOMER, METHOD: PUT, FUNCTION: update
+app.put("/:id", upload.single("image"), (req, res) => {
+  let param = { customer_id: req.params.id };
+  let data = {
+    name: req.body.name,
+    phone: req.body.phone,
+    adress: req.body.adress,
+    username: req.body.username,
+  };
+  if (req.file) {
+    // get data by id
+    const row = customer
+      .findOne({ where: param })
+      .then((result) => {
+        let oldFileName = result.image;
+
+        // delete old file
+        let dir = path.join(__dirname, "../image/customer", oldFileName);
+        fs.unlink(dir, (err) => console.log(err));
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+
+    // set new filename
+    data.image = req.file.filename;
+  }
+
+  if (req.body.password) {
+    data.password = md5(req.body.password);
+  }
+
+  customer
+    .update(data, { where: param })
+    .then((result) => {
+      res.json({
+        message: "data has been updated",
+      });
+    })
+    .catch((error) => {
+      res.json({
+        message: error.message,
+      });
+    });
+});
+
+//DELETE PRODUCT, METHOD: DELETE, FUNCTION: destroy
+app.delete("/:id", async (req, res) => {
+  try {
+    let param = { customer_id: req.params.id };
+    let result = await customer.findOne({ where: param });
+    let oldFileName = result.image;
+
+    // delete old file
+    let dir = path.join(__dirname, "../image/customer", oldFileName);
+    fs.unlink(dir, (err) => console.log(err));
+
+    // delete data
+    customer
+      .destroy({ where: param })
+      .then((result) => {
+        res.json({
+          message: "data has been deleted",
+        });
+      })
+      .catch((error) => {
+        res.json({
+          message: error.message,
+        });
+      });
+  } catch (error) {
+    res.json({
+      message: error.message,
+    });
+  }
+});
+
 module.exports = app;
