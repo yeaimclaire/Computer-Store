@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.transaksi, {
+      this.belongsTo(models.customer, {
         foreignKey: "transaksi_id",
         as: "transaksi",
       });
-      this.belongsTo(models.product, {
+      this.belongsTo(models.customer, {
         foreignKey: "product_id",
         as: "product",
       });
@@ -23,14 +23,15 @@ module.exports = (sequelize, DataTypes) => {
     {
       transaksi_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         primaryKey: true,
       },
       product_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      price: DataTypes.DOUBLE,
       qty: DataTypes.DOUBLE,
+      price: DataTypes.DOUBLE,
     },
     {
       sequelize,
@@ -38,5 +39,9 @@ module.exports = (sequelize, DataTypes) => {
       tableName: "detail_transaksi",
     }
   );
+  // create relation
+  detail_transaksi.associate = (models) => {
+    detail_transaksi.belongsTo(models.product, { foreignKey: "product_id", as: "product" });
+  };
   return detail_transaksi;
 };

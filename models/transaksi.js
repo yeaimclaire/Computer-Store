@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "customer_id",
         as: "customer",
       });
+
       this.hasMany(models.detail_transaksi, {
         foreignKey: "transaksi_id",
         as: "detail_transaksi",
@@ -24,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       transaksi_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
       },
       customer_id: {
         type: DataTypes.INTEGER,

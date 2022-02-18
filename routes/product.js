@@ -12,6 +12,10 @@ const fs = require("fs");
 const models = require("../models/index");
 const product = models.product;
 
+//import auth
+const auth = require("../auth");
+app.use(auth); //harus login baru bisa akses endpoint
+
 //config storage image
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
